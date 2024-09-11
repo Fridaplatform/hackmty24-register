@@ -15,3 +15,5 @@ jobs:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_HACKMTY24_SIGNUP }}'
           projectId: hackmty24-signup
+        env:
+          FIREBASE_CLI_EXPERIMENTS: webframeworks
