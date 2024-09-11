@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 
 
-const HackathonRegistrationForm = () => {
+const HackathonRegistrationForm: React.FC = () => {
   const [teamName, setTeamName] = useState('');
   const [members, setMembers] = useState([{ name: '', email: '', studentId: '', semester: '', major: '' }]);
-  const router = useRouter()
+  const navigate = useNavigate()
 
   const addMember = () => {
     setMembers([...members, { name: '', email: '', studentId: '', semester: '', major: '' }]);
@@ -33,7 +33,7 @@ const HackathonRegistrationForm = () => {
     console.log({ teamName, members });
     // Here you would typically send this data to your backend
 
-    router.push("/registration-confirmed")
+    navigate("/registration-confirmed")
   };
 
   return (

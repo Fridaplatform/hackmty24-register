@@ -1,9 +1,7 @@
-"use client"
 import HackathonRegistrationForm from '@/components/HackathonRegistrationForm'
-import React from 'react'
 
 
-const page = () => {
+const RegisterTeam = () => {
   return (
     <div>
         <HackathonRegistrationForm />
@@ -11,4 +9,4 @@ const page = () => {
   )
 }
 
-export default page
+export default RegisterTeam
