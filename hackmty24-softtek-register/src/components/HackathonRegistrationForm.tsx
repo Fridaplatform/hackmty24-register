@@ -1,20 +1,26 @@
-"use client"
-import React, { useState } from 'react';
-import { PlusCircle, Trash2 } from 'lucide-react';
+"use client";
+import React, { useState } from "react";
+import { PlusCircle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
+import { addDoc, collection } from "firebase/firestore";
+import { fs } from "@/firebase";
 
 const HackathonRegistrationForm: React.FC = () => {
-  const [teamName, setTeamName] = useState('');
-  const [members, setMembers] = useState([{ name: '', email: '', studentId: '', semester: '', major: '' }]);
-  const navigate = useNavigate()
+  const [teamName, setTeamName] = useState("");
+  const [members, setMembers] = useState([
+    { name: "", email: "", studentId: "", semester: "", major: "" },
+  ]);
+  const navigate = useNavigate();
 
   const addMember = () => {
-    setMembers([...members, { name: '', email: '', studentId: '', semester: '', major: '' }]);
+    setMembers([
+      ...members,
+      { name: "", email: "", studentId: "", semester: "", major: "" },
+    ]);
   };
 
   const removeMember = (index) => {
@@ -28,17 +34,35 @@ const HackathonRegistrationForm: React.FC = () => {
     setMembers(newMembers);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log({ teamName, members });
     // Here you would typically send this data to your backend
 
-    navigate("/registration-confirmed")
+    try {
+      const docRef = await addDoc(collection(fs, "teams"), {
+        teamName,
+        members,
+      });
+
+      const docId = docRef.id;
+
+      console.log(docId);
+
+      navigate(`/registration-confirmed/${docId}`);
+    } catch (e) {
+      console.error("There has been an error registering your team", e);
+    }
+
+    // TODO: generate code
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 pb-4 flex flex-col items-center">
-      <Card className='rounded-none w-full'>
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-8 pb-4 flex flex-col items-center"
+    >
+      <Card className="rounded-none w-full">
         <CardHeader>
           <CardTitle>Hackathon Team Registration</CardTitle>
         </CardHeader>
@@ -53,11 +77,13 @@ const HackathonRegistrationForm: React.FC = () => {
                 required
               />
             </div>
-            
+
             {members.map((member, index) => (
               <Card key={index} className="p-4">
                 <CardHeader>
-                  <CardTitle className="text-lg">Team Member {index + 1}</CardTitle>
+                  <CardTitle className="text-lg">
+                    Team Member {index + 1}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -65,7 +91,9 @@ const HackathonRegistrationForm: React.FC = () => {
                     <Input
                       id={`name-${index}`}
                       value={member.name}
-                      onChange={(e) => handleMemberChange(index, 'name', e.target.value)}
+                      onChange={(e) =>
+                        handleMemberChange(index, "name", e.target.value)
+                      }
                       required
                     />
                   </div>
@@ -75,16 +103,22 @@ const HackathonRegistrationForm: React.FC = () => {
                       id={`email-${index}`}
                       type="email"
                       value={member.email}
-                      onChange={(e) => handleMemberChange(index, 'email', e.target.value)}
+                      onChange={(e) =>
+                        handleMemberChange(index, "email", e.target.value)
+                      }
                       required
                     />
                   </div>
                   <div>
-                    <Label htmlFor={`studentId-${index}`}>Student ID (Optional)</Label>
+                    <Label htmlFor={`studentId-${index}`}>
+                      Student ID (Optional)
+                    </Label>
                     <Input
                       id={`studentId-${index}`}
                       value={member.studentId}
-                      onChange={(e) => handleMemberChange(index, 'studentId', e.target.value)}
+                      onChange={(e) =>
+                        handleMemberChange(index, "studentId", e.target.value)
+                      }
                     />
                   </div>
                   <div>
@@ -92,7 +126,9 @@ const HackathonRegistrationForm: React.FC = () => {
                     <Input
                       id={`semester-${index}`}
                       value={member.semester}
-                      onChange={(e) => handleMemberChange(index, 'semester', e.target.value)}
+                      onChange={(e) =>
+                        handleMemberChange(index, "semester", e.target.value)
+                      }
                       required
                     />
                   </div>
@@ -101,7 +137,9 @@ const HackathonRegistrationForm: React.FC = () => {
                     <Input
                       id={`major-${index}`}
                       value={member.major}
-                      onChange={(e) => handleMemberChange(index, 'major', e.target.value)}
+                      onChange={(e) =>
+                        handleMemberChange(index, "major", e.target.value)
+                      }
                       required
                     />
                   </div>
@@ -118,15 +156,22 @@ const HackathonRegistrationForm: React.FC = () => {
                 </CardContent>
               </Card>
             ))}
-            
+
             <Button type="button" onClick={addMember} className="w-full">
               <PlusCircle className="mr-2 h-4 w-4" /> Add Team Member
             </Button>
           </div>
         </CardContent>
       </Card>
-      
-      <Button type="submit" variant="default" className="w-fit bg-blue-400" size="lg">Submit Registration</Button>
+
+      <Button
+        type="submit"
+        variant="default"
+        className="w-fit bg-blue-400"
+        size="lg"
+      >
+        Submit Registration
+      </Button>
     </form>
   );
 };
