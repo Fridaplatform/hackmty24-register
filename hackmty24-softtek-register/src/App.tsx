@@ -1,9 +1,12 @@
-import ReactRouterBrowser from './router'
+import { AuthContextProvider } from "./auth/authContext";
+import ReactRouterBrowser from "./router";
 
 function App() {
   return (
-    <ReactRouterBrowser />
-  )
+    <AuthContextProvider>
+      <ReactRouterBrowser />
+    </AuthContextProvider>
+  );
 }
 
-export default App
+export default App;

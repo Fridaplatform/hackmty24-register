@@ -15,10 +15,10 @@ import {
 const ReactRouterBrowser = () => {
 
     const {
-        authState: { user, loading },
+        authState: { user, authReady },
       } = useAuthContext();
     
-      if (!loading) {
+      if (!authReady) {
         return null;
       }
     
@@ -26,9 +26,10 @@ const ReactRouterBrowser = () => {
        * @returns Redirects the user to the protected route it is requesting. If not authenticated, it is redirected to the login
        */
       const ProtectedRoute = ({ children }: { children: ReactNode }) => {
+        console.log("is there user?",user)
         // if not authenticated, redirect to login
         if (!user) {
-          return <Navigate to={"/"} />;
+          return <Navigate to={"/login"} />;
         }
     
         return children;
