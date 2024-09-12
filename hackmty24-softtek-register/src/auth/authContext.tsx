@@ -57,9 +57,11 @@ const authReducer = (state: AuthState, action: AuthAction) => {
 const AuthContext = createContext<{
   authState: AuthState;
   dispatch: React.Dispatch<AuthAction>;
+  dispatchWithCallback: (action: AuthAction, callback?: () => void) => void;
 }>({
   authState: initialState,
   dispatch: () => {},
+  dispatchWithCallback: () => {},
 });
 
 /**
@@ -72,6 +74,13 @@ const AuthContext = createContext<{
 const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [authState, dispatch] = useReducer(authReducer, initialState);
 
+  const dispatchWithCallback = (action: AuthAction, callback?: () => void) => {
+    dispatch(action);
+    if (callback) {
+      setTimeout(callback, 0);
+    }
+  };
+
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       console.log("auth changed", user);
@@ -83,7 +92,7 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ authState, dispatch }}>
+    <AuthContext.Provider value={{ authState, dispatch, dispatchWithCallback }}>
       {children}
     </AuthContext.Provider>
   );

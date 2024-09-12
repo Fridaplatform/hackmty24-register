@@ -18,7 +18,7 @@ export const description =
 
 export function SignupForm() {
   const navigate = useNavigate();
-  const { dispatch } = useAuthContext();
+  const { dispatch, dispatchWithCallback } = useAuthContext();
 
   return (
     <Card className="mx-auto max-w-sm">
@@ -77,10 +77,14 @@ export function SignupForm() {
               const { success, user, message } = await doSignInGithub();
               if (success && user) {
                 console.log("this the user", user);
-                dispatch({ type: "SET_USER", payload: user });
-                navigate("/register");
+                
+                dispatchWithCallback(
+                  { type: "SET_USER", payload: user },
+                  () => navigate('/register')
+                );
+                
               }
-              console.log("Error singing in with Google", message);
+              console.log("Error singing in with Github", message);
             }}
           >
             Sign up with GitHub

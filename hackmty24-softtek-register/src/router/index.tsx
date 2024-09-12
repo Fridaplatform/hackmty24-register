@@ -37,7 +37,6 @@ const ReactRouterBrowser = () => {
    * @returns Redirects the user to the protected route it is requesting. If not authenticated, it is redirected to the login
    */
   const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-    console.log("is there user?", user);
     // if not authenticated, redirect to login
     if (!user) {
       return <Navigate to={"/login"} />;
@@ -59,6 +58,10 @@ const ReactRouterBrowser = () => {
       path: "/register",
       // if user already has an account, retrieve team Id and redirect to their QR code.
       loader: async () => {
+        if (!user) {
+          return redirect("/");
+        }
+
         const uid = (user as User).uid || (user as UserCredential).user.uid;
 
         const userDoc = await getDoc(doc(fs, `users/${uid}`));
@@ -76,13 +79,16 @@ const ReactRouterBrowser = () => {
           }
         }
         // send uid to then save it along with the team document
-        return uid
+        return uid;
       },
       element: <ProtectedRoute children={<RegisterTeam />} />,
     },
     {
       path: "/registration-confirmed/:teamId",
       loader: async ({ params }: LoaderFunctionArgs) => {
+        if (!user) {
+          return redirect("/");
+        }
         const { teamId } = params;
 
         if (!teamId) {
