@@ -5,11 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { addDoc, collection } from "firebase/firestore";
 import { fs } from "@/firebase";
 
 const HackathonRegistrationForm: React.FC = () => {
+  const uid = useLoaderData() as string;
+
   const [teamName, setTeamName] = useState("");
   const [members, setMembers] = useState([
     { name: "", email: "", studentId: "", semester: "", major: "" },
@@ -43,6 +45,7 @@ const HackathonRegistrationForm: React.FC = () => {
       const docRef = await addDoc(collection(fs, "teams"), {
         teamName,
         members,
+        uid
       });
 
       const docId = docRef.id;

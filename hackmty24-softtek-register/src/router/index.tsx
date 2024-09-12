@@ -4,7 +4,16 @@ import Login from "@/pages/Login";
 import RegisterTeam from "@/pages/RegisterTeam";
 import RegistrationConfirmed from "@/pages/RegistrationConfirmed";
 import Signup from "@/pages/Signup";
-import { collection, doc, getDoc } from "firebase/firestore";
+import { Team } from "@/types/Team";
+import { User, UserCredential } from "firebase/auth";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import React, { ReactNode } from "react";
 import {
   createBrowserRouter,
@@ -48,6 +57,27 @@ const ReactRouterBrowser = () => {
     },
     {
       path: "/register",
+      // if user already has an account, retrieve team Id and redirect to their QR code.
+      loader: async () => {
+        const uid = (user as User).uid || (user as UserCredential).user.uid;
+
+        const userDoc = await getDoc(doc(fs, `users/${uid}`));
+        // if user already exists, go directly to registration-confirmed
+        if (userDoc.exists()) {
+          const colRef = collection(fs, "teams");
+          // get team document where the user uid is stored.
+          const q = query(colRef, where("uid", "==", uid));
+          const querySnapshot = await getDocs(q);
+
+          if (!querySnapshot.empty) {
+            console.log("this the length of the docs", querySnapshot.size);
+            const teamId = querySnapshot.docs[0].id;
+            return redirect(`/registration-confirmed/${teamId}`);
+          }
+        }
+        // send uid to then save it along with the team document
+        return uid
+      },
       element: <ProtectedRoute children={<RegisterTeam />} />,
     },
     {

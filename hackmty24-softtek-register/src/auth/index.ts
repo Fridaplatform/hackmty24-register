@@ -20,19 +20,18 @@ import { doc, setDoc } from "firebase/firestore";
  * @param email User's email
  * @param photoUrl User's photo URL (optional)
  */
-const createUserDocument = async (
+const createTeamDocument = async (
   uid: string,
-  email: string,
-  photoUrl: string = ""
+  email: string
 ) => {
   try {
+    // doc id es el uid del usuario
     await setDoc(doc(fs, "users", uid), {
-      email,
-      photoUrl,
       uid,
+      email
     });
   } catch (error) {
-    console.error("Error creating user document:", error);
+    console.error("Error creating team document:", error);
     throw error;
   }
 };
@@ -75,10 +74,9 @@ export const doSignInGoogle = async (): Promise<{
     await setPersistence(auth, browserLocalPersistence);
     const result = await signInWithPopup(auth, googleProvider);
     console.log("User photo created:", result.user.photoURL);
-    await createUserDocument(
+    await createTeamDocument(
       result.user.uid,
-      result.user.email!,
-      result.user.photoURL || ""
+      result.user.email!
     );
     return {
       success: true,
@@ -108,10 +106,10 @@ export const doSignInGithub = async (): Promise<{
     const result = await signInWithPopup(auth, githubProvider);
     console.log("result of user credential:", result);
     console.log("User photo created:", result.user.photoURL);
-    await createUserDocument(
+    await createTeamDocument(
       result.user.uid,
-      result.user.email!,
-      result.user.photoURL || ""
+      result.user.email!
+
     );
     return {
       success: true,
@@ -144,7 +142,7 @@ export const doSignUp = async (
       email,
       password
     );
-    await createUserDocument(userCredential.user.uid, email, photoUrl);
+    await createTeamDocument(userCredential.user.uid, userCredential.user.email!);
     console.log("User photo created:", userCredential.user.photoURL);
     return { status: "success", message: "true", user: userCredential.user };
   } catch (error) {
