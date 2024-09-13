@@ -4,6 +4,7 @@ import Login from "@/pages/Login";
 import RegisterTeam from "@/pages/RegisterTeam";
 import RegistrationConfirmed from "@/pages/RegistrationConfirmed";
 import Signup from "@/pages/Signup";
+import TeamsDashboard from "@/pages/TeamsDashboard";
 import { Team } from "@/types/Team";
 import { User, UserCredential } from "firebase/auth";
 import {
@@ -11,6 +12,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  orderBy,
   query,
   where,
 } from "firebase/firestore";
@@ -104,6 +106,45 @@ const ReactRouterBrowser = () => {
         }
       },
       element: <ProtectedRoute children={<RegistrationConfirmed />} />,
+    },
+    {
+      path: "/showGrades",
+      loader: async () => {
+        const querySnapshot = await getDocs(collection(fs, "categories"));
+        const categoriesInfo = querySnapshot.docs.map((doc) => {
+          return {
+            id: doc.id,
+            ...doc.data(),
+          };
+        });
+
+        // get evaluations by judges
+        const evaluationsQuerySnapshot = await getDocs(collection(fs, "evaluations"));
+        const evaluationsInfo = evaluationsQuerySnapshot.docs.map((doc) => {
+          // TODO: get the name of all judges 
+          return {
+            id: doc.id,
+            ...doc.data(),
+          };
+        });
+
+
+
+        // get all teams and grades
+        const teamsRef = collection(fs, "teams"); // Reference to the 'teams' collection
+        const q = query(teamsRef, orderBy("finalScore", "desc")); // Query to order by 'finalScore' in descending order
+        const teamsQuerySnapshot = await getDocs(q);
+
+        const teamsData = teamsQuerySnapshot.docs.map((doc) => doc.data());
+
+        return {
+          teamsData, // las calificaciones de los equipos
+          categoriesInfo, // las columnas que aparecen en la tabla
+          evaluationsInfo // las evaluaciones de los jueces.
+        }
+      },
+
+      element: <TeamsDashboard />,
     },
   ];
 

@@ -45,7 +45,7 @@ const HackathonRegistrationForm: React.FC = () => {
       const docRef = await addDoc(collection(fs, "teams"), {
         teamName,
         members,
-        uid
+        teamLeaderId: uid
       });
 
       const docId = docRef.id;

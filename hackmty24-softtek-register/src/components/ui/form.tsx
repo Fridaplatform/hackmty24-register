@@ -26,15 +26,28 @@ const FormFieldContext = React.createContext<FormFieldContextValue>(
   {} as FormFieldContextValue
 )
 
+// added label, description and className props.
 const FormField = <
   TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
+  label,
+  description,
+  className, 
+  render,
   ...props
-}: ControllerProps<TFieldValues, TName>) => {
+}: {label?: React.ReactNode, description?: React.ReactNode, className?: string} & ControllerProps<TFieldValues, TName>) => {
   return (
     <FormFieldContext.Provider value={{ name: props.name }}>
-      <Controller {...props} />
+      <Controller {...props} render={(field) => (
+        <FormItem className={className}>
+          {!!label && <FormLabel>{label}</FormLabel>}
+          <FormControl>{render(field)}</FormControl>
+          {!!description && <FormDescription>{description}</FormDescription>}
+          <FormMessage />
+        </FormItem>
+        )} 
+      />
     </FormFieldContext.Provider>
   )
 }
