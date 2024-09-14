@@ -12,12 +12,12 @@ const Signup = () => {
   // UNCOMMENT FOR EXPECTED BEHAVIOUR IN PRODUCTION
   useEffect(() => {
     if (user) {
-      navigate('/register');
+      navigate('/register', {replace: true});
     }
   }, [user, navigate]);
 
   return (
-    <div className="w-full flex flex-col justify-center bg-gradient-to-b from-black to-[#5d2e7f] lg:grid min-h-dvh lg:grid-cols-2">
+    <div className="w-full flex flex-col justify-center bg-gradient-to-b from-black to-[#5d2e7f] lg:grid min-h-dvh lg:grid-cols-2 overflow-y-hidden">
       <div className="flex items-center justify-center h-full px-4 py-12 z-10">
         <SignupForm />
       </div>
