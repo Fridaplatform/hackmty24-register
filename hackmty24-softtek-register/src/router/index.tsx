@@ -139,7 +139,6 @@ const ReactRouterBrowser = () => {
         const teamsData = teamsQuerySnapshot.docs.map((doc) => doc.data());
 
         const password = (await getDoc(doc(fs, `gradesPassword/EF5kPyUGWoHz8rlSRBZq`))).data()
-        console.log("this is it",password)
 
         return {
           teamsData, // las calificaciones de los equipos
