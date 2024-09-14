@@ -118,7 +118,6 @@ const HackathonRegistrationForm: React.FC = () => {
                       onChange={(e) =>
                         handleMemberChange(index, "githubEmail", e.target.value)
                       }
-                      required
                     />
                   </div>
                   <div>

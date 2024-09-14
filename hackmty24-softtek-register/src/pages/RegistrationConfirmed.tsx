@@ -29,7 +29,7 @@ const RegistrationConfirmed = () => {
   };
 
   return (
-    <div className="min-h-dvh flex flex-col items-center h-full">
+    <div className="min-h-dvh flex flex-col items-center h-full bg-gradient-to-b from-black to-[#5d2e7f] text-white">
       <p className="mt-4 text-lg font-bold">
         Registration confirmed. Good luck!!
       </p>
