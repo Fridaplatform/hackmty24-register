@@ -6,13 +6,15 @@ import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Evaluation from "@/types/Evaluation";
 import { ColumnDef } from "@tanstack/react-table";
-import { collection, getDocs } from "firebase/firestore";
-import { ArrowUpDown, RefreshCw } from "lucide-react";
-import React, { SyntheticEvent, useEffect, useState } from "react";
+import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import { RefreshCw } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { fs } from "@/firebase";
-import { useLoaderData, useRevalidator } from "react-router-dom";
+import { useFetcher, useLoaderData, useRevalidator } from "react-router-dom";
 import { Category, Team } from "@/types/Team";
+import { cn } from "@/lib/utils";
+import TeamReviewCard from "@/components/TeamReviewCard";
+import { fs } from "@/firebase";
 
 // Define the form fields type
 type FormValues = {
@@ -44,7 +46,6 @@ const TeamsDashboard = () => {
   useEffect(() => {
     // crear estructura de columnas dinamicamente.
     // PRIMERO LA TABLA DE MEJORES EQUIPOS.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const columns: ColumnDef<Team>[] = [];
 
     columns.push({
@@ -61,32 +62,99 @@ const TeamsDashboard = () => {
     categoriesInfo.map((category: Category) => {
       columns.push({
         header: category.name,
-        // cell: ({ row }) => row.original[category.id],
         accessorKey: `categoryScores.${category.id}`,
       });
     });
 
+    //  aqui al final si se va a tener que recalcular todo de forma dinamica yo creo. ://
     columns.push({
       accessorKey: "finalScore",
-      header: "Calificacion",
+      header: "Calificacion final",
+      cell: ({ row }) => {
+        const finalScore = row.getValue("finalScore") as number;
+
+        // Define color based on the finalScore value
+        const scoreColor = cn({
+          "text-red-500": finalScore < 50, // Red for 0-49
+          "text-orange-500": finalScore >= 50 && finalScore < 70, // Orange for 50-69
+          "text-yellow-500": finalScore >= 70 && finalScore < 85, // Yellow for 70-84
+          "text-green-500": finalScore >= 85, // Green for 85-100
+        });
+        return <p className={scoreColor}>{finalScore}</p>;
+      },
     });
 
     setColumns(columns);
   }, [categoriesInfo]);
 
+  const handleScoreSubmit = async (teamId: string, newScore: number) => {
+    if (!newScore) {
+      return { success: false, error: "There has been an error" };
+    }
+
+    try {
+      const teamDocRef = doc(fs, `teams/${teamId}`);
+      await updateDoc(teamDocRef, {
+        evaluated: true,
+
+        // update score de caldiad de repositorio
+        [`categoryScores.qD5BHVUZ5VbheG2arTjJ`]: newScore,
+      });
+
+
+      // traer data nueva!
+      revalidate()
+      return { success: true };
+    } catch (error) {
+      console.error("Error updating document: ", error);
+      return { success: false, error };
+    }
+  };
+
   return (
-    <div className="min-h-dvh h-full flex flex-col justify-center">
+    <div className="min-h-dvh h-full flex flex-col justify-center p-4">
       <div className="flex flex-col justify-center h-full items-center">
         {isAuthenticated ? (
           //   <HackathonEvaluationTable />
           <div className="space-y-2 flex flex-col ">
-            <Button onClick={revalidate} variant="outline" className="self-end gap-2">
+            <Button
+              onClick={revalidate}
+              variant="outline"
+              className="self-end gap-2"
+            >
               Refresh data
               <span>
-              <RefreshCw className="text-gray-800 size-4" />
+                <RefreshCw className="text-gray-800 size-4" />
               </span>
             </Button>
-            <GradesTable data={teamsData} columns={columns} />
+            <div className="space-y-2">
+              <GradesTable data={teamsData} columns={columns} />
+              <p className="text-xs text-gray-500">
+                Calificacion final toma el promedio de los{" "}
+                {categoriesInfo.length} rubros y los multiplica por 10.
+              </p>
+            </div>
+
+            {/* lista de equipos pendientes para revision manual */}
+            <div className="mt-4">
+              <p className="text-lg font-bold">Pendientes de revisión manual</p>
+              <ul className="list-disc list-inside">
+                {teamsData.map((team: Team, index: number) => {
+                  if (!team.evaluated) {
+                    return (
+                      <TeamReviewCard
+                        key={index}
+                        team={team}
+                        onScoreSubmit={(teamId, newScore) => {
+                          console.log("sending", teamId, newScore);
+                          handleScoreSubmit(teamId, newScore);
+                        }}
+                      />
+                    );
+                  }
+                })}
+              </ul>
+            </div>
           </div>
         ) : (
           // <p>auth</p>

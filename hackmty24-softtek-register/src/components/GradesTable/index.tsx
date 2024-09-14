@@ -5,7 +5,7 @@ import {
   getSortedRowModel,
   SortingState,
   useReactTable,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 
 import {
   Table,
@@ -14,21 +14,20 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import Evaluation from '@/types/Evaluation'
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
-import { useState } from "react"
-import { Team } from "@/types/Team"
-
+} from "@/components/ui/table";
+import Evaluation from "@/types/Evaluation";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import { useState } from "react";
+import { Team } from "@/types/Team";
 
 export function GradesTable({
   data,
   columns,
 }: {
-  data: Team[]
-  columns: ColumnDef<Team>[]
+  data: Team[];
+  columns: ColumnDef<Team>[];
 }) {
-  const [sorting, setSorting] = useState<SortingState>([])
+  const [sorting, setSorting] = useState<SortingState>([]);
   const table = useReactTable({
     data,
     columns,
@@ -38,7 +37,7 @@ export function GradesTable({
     state: {
       sorting,
     },
-  })
+  });
 
   return (
     <div>
@@ -70,14 +69,20 @@ export function GradesTable({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
@@ -88,30 +93,39 @@ export function GradesTable({
 
       {/* Mobile view */}
       <div className="md:hidden space-y-4">
-        {data.map((evaluation, index) => (
-          <Card key={index}>
-            <CardHeader>
-              <CardTitle>{evaluation.teamName}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-2">
-                {columns.slice(1).map((column, colIndex) => (
-                  <div key={colIndex} className="flex justify-between">
-                    <span className="font-medium">{column.header as string}:</span>
+        <div className="space-y-4">
+          {table.getRowModel().rows.map((row) => (
+            <Card key={row.id}>
+              <CardHeader>
+                <CardTitle>{row.original.teamName}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {row.getVisibleCells().map((cell) => (
+                  <div key={cell.id} className="flex justify-between py-1">
+                    <span className="font-medium">
+                      {cell.column.columnDef.header}:
+                    </span>
                     <span>
-                      {column.id === 'overallGrade'
-                        ? (Object.values(evaluation).filter((v): v is number => typeof v === 'number').reduce((a, b) => a + b, 0) / 10).toFixed(2)
-                        : evaluation[column.accessorKey as keyof Evaluation]}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </span>
                   </div>
                 ))}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+              <CardFooter>
+                <p className="text-xs text-gray-500">
+
+                Calificacion toma el promedio de los rubros y los multiplica por 10.
+                </p>
+                </CardFooter>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default GradesTable
+export default GradesTable;

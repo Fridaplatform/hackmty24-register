@@ -15,6 +15,7 @@ interface Team {
   evaluatorCount: number;
   finalScore: number;
   categoryScores: Record<string, number> // id de la categoria y el valor
+  evaluated?: boolean;
 }
 
 

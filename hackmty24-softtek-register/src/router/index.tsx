@@ -5,7 +5,6 @@ import RegisterTeam from "@/pages/RegisterTeam";
 import RegistrationConfirmed from "@/pages/RegistrationConfirmed";
 import Signup from "@/pages/Signup";
 import TeamsDashboard from "@/pages/TeamsDashboard";
-import { Team } from "@/types/Team";
 import { User, UserCredential } from "firebase/auth";
 import {
   collection,
@@ -14,10 +13,12 @@ import {
   getDocs,
   orderBy,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import React, { ReactNode } from "react";
 import {
+  ActionFunctionArgs,
   createBrowserRouter,
   LoaderFunctionArgs,
   Navigate,
@@ -119,16 +120,16 @@ const ReactRouterBrowser = () => {
         });
 
         // get evaluations by judges
-        const evaluationsQuerySnapshot = await getDocs(collection(fs, "evaluations"));
+        const evaluationsQuerySnapshot = await getDocs(
+          collection(fs, "evaluations")
+        );
         const evaluationsInfo = evaluationsQuerySnapshot.docs.map((doc) => {
-          // TODO: get the name of all judges 
+          // TODO: get the name of all judges
           return {
             id: doc.id,
             ...doc.data(),
           };
         });
-
-
 
         // get all teams and grades
         const teamsRef = collection(fs, "teams"); // Reference to the 'teams' collection
@@ -140,8 +141,8 @@ const ReactRouterBrowser = () => {
         return {
           teamsData, // las calificaciones de los equipos
           categoriesInfo, // las columnas que aparecen en la tabla
-          evaluationsInfo // las evaluaciones de los jueces.
-        }
+          evaluationsInfo, // las evaluaciones de los jueces.
+        };
       },
 
       element: <TeamsDashboard />,
