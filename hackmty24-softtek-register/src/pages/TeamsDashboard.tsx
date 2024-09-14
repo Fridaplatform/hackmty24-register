@@ -1,16 +1,14 @@
-import HackathonEvaluationTable from "@/components/GradesTable";
 import GradesTable from "@/components/GradesTable";
 // import { columns } from "@/components/GradesTable/columns";
 import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import Evaluation from "@/types/Evaluation";
 import { ColumnDef } from "@tanstack/react-table";
-import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { RefreshCw } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useFetcher, useLoaderData, useRevalidator } from "react-router-dom";
+import { useLoaderData, useRevalidator } from "react-router-dom";
 import { Category, Team } from "@/types/Team";
 import { cn } from "@/lib/utils";
 import TeamReviewCard from "@/components/TeamReviewCard";
@@ -80,7 +78,7 @@ const TeamsDashboard = () => {
           "text-yellow-500": finalScore >= 70 && finalScore < 85, // Yellow for 70-84
           "text-green-500": finalScore >= 85, // Green for 85-100
         });
-        return <p className={scoreColor}>{finalScore}</p>;
+        return <p className={scoreColor}>{finalScore} {row.original.evaluated === true ? "✅" : null}</p>;
       },
     });
 
