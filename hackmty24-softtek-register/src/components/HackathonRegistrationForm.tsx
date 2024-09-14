@@ -14,14 +14,14 @@ const HackathonRegistrationForm: React.FC = () => {
 
   const [teamName, setTeamName] = useState("");
   const [members, setMembers] = useState([
-    { name: "", email: "", studentId: "", semester: "", major: "" },
+    { name: "", email: "", studentId: "", semester: "", major: "", githubEmail: "" },
   ]);
   const navigate = useNavigate();
 
   const addMember = () => {
     setMembers([
       ...members,
-      { name: "", email: "", studentId: "", semester: "", major: "" },
+      { name: "", email: "", studentId: "", semester: "", major: "", githubEmail: "" },
     ]);
   };
 
@@ -39,7 +39,6 @@ const HackathonRegistrationForm: React.FC = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log({ teamName, members });
-    // Here you would typically send this data to your backend
 
     try {
       const docRef = await addDoc(collection(fs, "teams"), {
@@ -56,8 +55,6 @@ const HackathonRegistrationForm: React.FC = () => {
     } catch (e) {
       console.error("There has been an error registering your team", e);
     }
-
-    // TODO: generate code
   };
 
   return (
@@ -108,6 +105,18 @@ const HackathonRegistrationForm: React.FC = () => {
                       value={member.email}
                       onChange={(e) =>
                         handleMemberChange(index, "email", e.target.value)
+                      }
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor={`githubEmail-${index}`}>GitHub Email</Label>
+                    <Input
+                      id={`githubEmail-${index}`}
+                      type="email"
+                      value={member.githubEmail}
+                      onChange={(e) =>
+                        handleMemberChange(index, "githubEmail", e.target.value)
                       }
                       required
                     />
