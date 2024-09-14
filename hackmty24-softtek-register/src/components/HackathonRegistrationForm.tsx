@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLoaderData, useNavigate } from "react-router-dom";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, updateDoc, doc } from "firebase/firestore";
 import { fs } from "@/firebase";
 
 const HackathonRegistrationForm: React.FC = () => {
@@ -14,14 +14,28 @@ const HackathonRegistrationForm: React.FC = () => {
 
   const [teamName, setTeamName] = useState("");
   const [members, setMembers] = useState([
-    { name: "", email: "", studentId: "", semester: "", major: "", githubEmail: "" },
+    {
+      name: "",
+      email: "",
+      studentId: "",
+      semester: "",
+      major: "",
+      githubEmail: "",
+    },
   ]);
   const navigate = useNavigate();
 
   const addMember = () => {
     setMembers([
       ...members,
-      { name: "", email: "", studentId: "", semester: "", major: "", githubEmail: "" },
+      {
+        name: "",
+        email: "",
+        studentId: "",
+        semester: "",
+        major: "",
+        githubEmail: "",
+      },
     ]);
   };
 
@@ -44,10 +58,14 @@ const HackathonRegistrationForm: React.FC = () => {
       const docRef = await addDoc(collection(fs, "teams"), {
         teamName,
         members,
-        teamLeaderId: uid
+        teamLeaderId: uid,
       });
 
       const docId = docRef.id;
+
+      await updateDoc(doc(fs, `teams/${docId}`), {
+        uid: docId,
+      });
 
       console.log(docId);
 
