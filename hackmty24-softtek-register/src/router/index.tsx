@@ -72,7 +72,7 @@ const ReactRouterBrowser = () => {
         if (userDoc.exists()) {
           const colRef = collection(fs, "teams");
           // get team document where the user uid is stored.
-          const q = query(colRef, where("uid", "==", uid));
+          const q = query(colRef, where("teamLeaderId", "==", uid));
           const querySnapshot = await getDocs(q);
 
           if (!querySnapshot.empty) {
