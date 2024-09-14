@@ -94,16 +94,26 @@ const TeamsDashboard = () => {
 
     try {
       const teamDocRef = doc(fs, `teams/${teamId}`);
+
+      const teamObj = teamsData.find(
+        (element: Team) => element.uid === teamId
+      ) as Team;
+
+      teamObj.categoryScores["qD5BHVUZ5VbheG2arTjJ"] = newScore;
+
+      const values = Object.values(teamObj.categoryScores);
+      const sum = values.reduce((acc, value) => acc + value, 0);
+      const average = sum / values.length;
+      // update final score
+      teamObj.finalScore = average * 10;
+
       await updateDoc(teamDocRef, {
         evaluated: true,
-
-        // update score de caldiad de repositorio
-        [`categoryScores.qD5BHVUZ5VbheG2arTjJ`]: newScore,
+        ...teamObj,
       });
 
-
       // traer data nueva!
-      revalidate()
+      revalidate();
       return { success: true };
     } catch (error) {
       console.error("Error updating document: ", error);
