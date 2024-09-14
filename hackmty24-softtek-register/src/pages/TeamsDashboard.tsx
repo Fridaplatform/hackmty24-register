@@ -20,11 +20,11 @@ type FormValues = {
 };
 const TeamsDashboard = () => {
   // cambiar por default a false
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const form = useForm<FormValues>();
   const { revalidate } = useRevalidator();
 
-  const { teamsData, categoriesInfo, evaluationsInfo } = useLoaderData();
+  const { teamsData, categoriesInfo, evaluationsInfo, secret } = useLoaderData();
 
   console.log("teams Data", teamsData);
   console.log("categoriesInfo", categoriesInfo);
@@ -34,7 +34,7 @@ const TeamsDashboard = () => {
 
   const onSubmit: SubmitHandler<FormValues> = (data: { password: string }) => {
     console.log("Form data:", data);
-    if (data.password === "softtek#hack24") {
+    if (data.password === secret.password) {
       setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);
@@ -146,7 +146,7 @@ const TeamsDashboard = () => {
             {/* lista de equipos pendientes para revision manual */}
             <div className="mt-4">
               <p className="text-lg font-bold">Pendientes de revisión manual</p>
-              <ul className="list-disc list-inside">
+              <ul className=" grid grid-cols-4 gap-4">
                 {teamsData.map((team: Team, index: number) => {
                   if (!team.evaluated) {
                     return (

@@ -28,7 +28,7 @@ export const TeamReviewCard: React.FC<Props> = ({ team, onScoreSubmit }) => {
   return (
     <Card className="mb-4 w-full max-w-md ">
       <CardHeader>
-        <CardTitle>{team.teamName}, {team.uid}</CardTitle>
+        <CardTitle>{team.teamName}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
           <Input
