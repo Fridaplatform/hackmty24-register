@@ -1,6 +1,5 @@
 import { fs } from "@/firebase";
 import useAuthContext from "@/hooks/useAuthContext";
-import Login from "@/pages/Login";
 import RegisterTeam from "@/pages/RegisterTeam";
 import RegistrationConfirmed from "@/pages/RegistrationConfirmed";
 import Signup from "@/pages/Signup";
@@ -13,12 +12,10 @@ import {
   getDocs,
   orderBy,
   query,
-  updateDoc,
   where,
 } from "firebase/firestore";
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import {
-  ActionFunctionArgs,
   createBrowserRouter,
   LoaderFunctionArgs,
   Navigate,
@@ -52,10 +49,6 @@ const ReactRouterBrowser = () => {
     {
       path: "/",
       element: <Signup />,
-    },
-    {
-      path: "login",
-      element: <Login />,
     },
     {
       path: "/register",

@@ -1,10 +1,7 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { SignupForm } from '@/components/SignupForm'
-import { Button } from '@/components/ui/button'
-import { logout } from '@/auth'
 import useAuthContext from '@/hooks/useAuthContext'
 import { useNavigate } from 'react-router-dom'
-import FlickeringGrid from '@/components/magicui/flickering-grid'
 import { cn } from '@/lib/utils'
 import AnimatedGridPattern from "@/components/magicui/animated-grid-pattern";
 const Signup = () => {

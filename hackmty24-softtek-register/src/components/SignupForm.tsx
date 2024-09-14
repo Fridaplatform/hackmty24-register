@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -8,9 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { doSignInGithub, doSignInGoogle } from "@/auth";
+import { doSignInGithub } from "@/auth";
 import useAuthContext from "@/hooks/useAuthContext";
 
 export const description =
@@ -18,7 +16,7 @@ export const description =
 
 export function SignupForm() {
   const navigate = useNavigate();
-  const { dispatch, dispatchWithCallback } = useAuthContext();
+  const { dispatchWithCallback } = useAuthContext();
 
   return (
     <Card className="mx-auto max-w-sm">
