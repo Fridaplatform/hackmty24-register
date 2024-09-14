@@ -39,18 +39,19 @@ const HackathonRegistrationForm: React.FC = () => {
     ]);
   };
 
-  const removeMember = (index) => {
+  const removeMember = (index: number) => {
     const newMembers = members.filter((_, i) => i !== index);
     setMembers(newMembers);
   };
 
-  const handleMemberChange = (index, field, value) => {
+  const handleMemberChange = (index: number, field: string, value: string) => {
     const newMembers = [...members];
+    // @ts-expect-error i need it
     newMembers[index][field] = value;
     setMembers(newMembers);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     console.log({ teamName, members });
 

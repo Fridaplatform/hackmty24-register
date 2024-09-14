@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Team } from "@/types/Team";
 import { useRef } from "react";
 import QRCode from "react-qr-code";
-import { useLoaderData, useParams } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import * as htmlToImage from "html-to-image";
 
 const RegistrationConfirmed = () => {

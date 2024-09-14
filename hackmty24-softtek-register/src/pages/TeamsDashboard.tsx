@@ -23,7 +23,7 @@ const TeamsDashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const form = useForm<FormValues>();
   const { revalidate } = useRevalidator();
-
+// @ts-expect-error i need it
   const { teamsData, categoriesInfo, evaluationsInfo, secret } = useLoaderData();
 
   console.log("teams Data", teamsData);

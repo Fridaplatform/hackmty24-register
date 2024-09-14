@@ -133,7 +133,6 @@ export const doSignInGithub = async (): Promise<{
 export const doSignUp = async (
   email: string,
   password: string,
-  photoUrl: string = ""
 ): Promise<SignStatus> => {
   try {
     await setPersistence(auth, browserLocalPersistence);

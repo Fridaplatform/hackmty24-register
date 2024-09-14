@@ -15,8 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Evaluation from "@/types/Evaluation";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { useState } from "react";
 import { Team } from "@/types/Team";
 
@@ -103,7 +102,7 @@ export function GradesTable({
                 {row.getVisibleCells().map((cell) => (
                   <div key={cell.id} className="flex justify-between py-1">
                     <span className="font-medium">
-                      {cell.column.columnDef.header}:
+                    {(cell.column.columnDef.header as React.ReactNode) ?? 'Default Header'}
                     </span>
                     <span>
                       {flexRender(
